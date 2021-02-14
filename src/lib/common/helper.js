@@ -77,9 +77,9 @@ export const checkForWin = (currentBoard, moveToCheck) => {
                     isWin: true,
                     winningCord: [
                         [i, j],
-                        [i + 1, j + 1],
-                        [i + 2, j + 2],
-                        [i + 3, j + 3]
+                        [i + 1, j - 1],
+                        [i + 2, j - 2],
+                        [i + 3, j - 3]
                     ]
                 };
             }
@@ -88,7 +88,7 @@ export const checkForWin = (currentBoard, moveToCheck) => {
 
     return {
         isWin: false,
-        winningCord: [] // do we need winning cordinate?
+        winningCord: []
     };
 };
 
