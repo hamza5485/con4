@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Grid, makeStyles } from '@material-ui/core';
-import Piece from '../Piece/Piece';
+import { Button, FormControl, Grid, InputLabel, makeStyles, MenuItem, Select, Typography } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
 import { PLAYERS } from '../../../lib/common/helper';
+const Piece = React.lazy(() => import('../Piece'));
 
 
 
@@ -34,11 +34,17 @@ const useStyles = makeStyles(theme => ({
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
     },
+    formControl: {
+        margin: theme.spacing(2, 1, 1, 1),
+        minWidth: 120,
+    },
 }));
 
 const Board = () => {
     const classes = useStyles();
     const [playerTurn, setPlayerTurn] = React.useState(PLAYERS.HUMAN);
+    const [depth, setDepth] = React.useState(3);
+    const [status, setStatus] = React.useState(`Your Turn`);
     const [board, setBoard] = React.useState(() => {
         let b = [];
         for (let i = 0; i < 7; i++) { // cols
@@ -57,6 +63,8 @@ const Board = () => {
 
     const playerClick = col => playerTurn === PLAYERS.HUMAN && makeMove(col);
 
+    const handleDepthChange = e => setDepth(e.target.value);
+
     const makeMove = col => {
         let currentBoard = [...board];
         for (let i = currentBoard[col].length; i--;) {
@@ -69,9 +77,18 @@ const Board = () => {
         setPlayerTurn(playerTurn === PLAYERS.HUMAN ? PLAYERS.AI : PLAYERS.HUMAN);
     };
 
+    const restartGame = () => window.location.reload();
 
     return (
         <Grid container alignItems="center" justify="center" direction="column">
+            <Grid className={classes.gridMargin} container alignItems="center" justify="center" direction="row">
+                <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-outlined-label">Depth</InputLabel>
+                    <Select labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" value={depth} onChange={handleDepthChange} label="Depth">
+                        {[3, 4, 5, 6, 7, 8, 9].map(val => <MenuItem key={val} selected={val === depth ? true : false} value={val}>{val}</MenuItem>)}
+                    </Select>
+                </FormControl>
+            </Grid>
             <Grid container className={classes.root} alignItems="center" justify="center">
                 {board.map((column, colIndex) => (
                     <Grid item xs={1} key={colIndex} className={classes.column} onClick={() =>/* playerClick(colIndex)*/ makeMove(colIndex)}>
@@ -82,6 +99,16 @@ const Board = () => {
                         ))}
                     </Grid>
                 ))}
+            </Grid>
+            <Grid className={classes.gridMargin} container alignItems="center" justify="center" direction="row">
+                <Typography variant="h4" gutterBottom>
+                    {status}
+                </Typography>
+            </Grid>
+            <Grid className={classes.gridMargin} container alignItems="center" justify="center" direction="row">
+                <Button variant="contained" onClick={restartGame}>
+                    Restart
+                </Button>
             </Grid>
         </Grid>
     );
