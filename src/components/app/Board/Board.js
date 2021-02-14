@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Button, FormControl, Grid, InputLabel, makeStyles, MenuItem, Select, Typography } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
-import { PLAYERS } from '../../../lib/common/helper';
+import { checkForWin, containsEmptySpace, PLAYERS } from '../../../lib/common/helper';
 const Piece = React.lazy(() => import('../Piece'));
 
 
@@ -43,6 +43,8 @@ const useStyles = makeStyles(theme => ({
 const Board = () => {
     const classes = useStyles();
     const [playerTurn, setPlayerTurn] = React.useState(PLAYERS.HUMAN);
+    const [gameOver, setGameOver] = React.useState(false);
+    const [isDraw, setIsDraw] = React.useState(false);
     const [depth, setDepth] = React.useState(3);
     const [status, setStatus] = React.useState(`Your Turn`);
     const [board, setBoard] = React.useState(() => {
@@ -66,15 +68,28 @@ const Board = () => {
     const handleDepthChange = e => setDepth(e.target.value);
 
     const makeMove = col => {
-        let currentBoard = [...board];
-        for (let i = currentBoard[col].length; i--;) {
-            if (currentBoard[col][i] === '') {
-                currentBoard[col][i] = playerTurn;
-                break;
+        if (!gameOver) {
+            let currentBoard = [...board];
+            for (let i = currentBoard[col].length; i--;) {
+                if (currentBoard[col][i] === '') {
+                    currentBoard[col][i] = playerTurn;
+                    break;
+                }
+            }
+            setBoard(currentBoard);
+            const winStatus = checkForWin(currentBoard, playerTurn);
+            if (winStatus.isWin) {
+                setGameOver(true);
+                setStatus(`${playerTurn === PLAYERS.HUMAN ? `YOU` : `AI`} WON!`);
+            } else if (!containsEmptySpace(currentBoard)) {
+                setGameOver(true);
+                setIsDraw(true);
+                setStatus(`DRAW!`);
+            } else {
+                setPlayerTurn(playerTurn === PLAYERS.HUMAN ? PLAYERS.AI : PLAYERS.HUMAN);
+                setStatus(status === `Your Turn` ? `AI's turn` : `Your Turn`);
             }
         }
-        setBoard(currentBoard);
-        setPlayerTurn(playerTurn === PLAYERS.HUMAN ? PLAYERS.AI : PLAYERS.HUMAN);
     };
 
     const restartGame = () => window.location.reload();
