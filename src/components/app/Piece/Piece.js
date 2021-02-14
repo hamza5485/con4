@@ -39,7 +39,6 @@ const Piece = props => {
             {props.player === PLAYERS.AI && <div className={classes.circle} style={{ backgroundColor: yellow[300], border: `4px double ${yellow[900]}` }} />}
             {props.player === '' && <div className={classes.circle} style={{ backgroundColor: `white`, border: `4px double black` }} />}
         </div>
-
     );
 };
 
