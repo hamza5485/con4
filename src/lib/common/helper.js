@@ -13,7 +13,7 @@ export const PLAYERS = {
 export const checkForWin = (currentBoard, moveToCheck) => {
     for (let i = 0; i < currentBoard.length; i++) {
         for (let j = 0; j < currentBoard[i].length; j++) {
-            // check horizontal (vertical on board GUI)
+            // check horizontal
             if (currentBoard[i][j] === moveToCheck &&
                 currentBoard[i][j + 1] === moveToCheck &&
                 currentBoard[i][j + 2] === moveToCheck &&
@@ -29,7 +29,7 @@ export const checkForWin = (currentBoard, moveToCheck) => {
                 };
             }
 
-            // vertical (horizontal on board GUI)
+            // check vertical
             // @ i >= 4, i++ will eventually lead to i being greated than index for example: 
             //      i=4, i+3 = 7 ~> error: index out of bounds
             //      i=5, i+2 = 7 ~> error: index out of bounds
@@ -50,7 +50,7 @@ export const checkForWin = (currentBoard, moveToCheck) => {
                 };
             }
 
-            // descending diagonal
+            // check descending diagonal
             if (i <= 3 &&
                 currentBoard[i][j] === moveToCheck &&
                 currentBoard[i + 1][j + 1] === moveToCheck &&
@@ -67,7 +67,7 @@ export const checkForWin = (currentBoard, moveToCheck) => {
                 };
             }
 
-            // ascending diagonal
+            // check ascending diagonal
             if (i <= 3 &&
                 currentBoard[i][j] === moveToCheck &&
                 currentBoard[i + 1][j - 1] === moveToCheck &&
