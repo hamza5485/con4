@@ -47,6 +47,7 @@ const Board = () => {
     const [isDraw, setIsDraw] = React.useState(false);
     const [depth, setDepth] = React.useState(3);
     const [status, setStatus] = React.useState(`Your Turn`);
+    const [winningCord, setWinningCord] = React.useState(null);
     const [board, setBoard] = React.useState(() => {
         let b = [];
         for (let i = 0; i < 7; i++) { // cols
@@ -80,6 +81,7 @@ const Board = () => {
             const winStatus = checkForWin(currentBoard, playerTurn);
             if (winStatus.isWin) {
                 setGameOver(true);
+                setWinningCord(winStatus.winningCord);
                 setStatus(`${playerTurn === PLAYERS.HUMAN ? `YOU` : `AI`} WON!`);
             } else if (!containsEmptySpace(currentBoard)) {
                 setGameOver(true);
@@ -90,6 +92,17 @@ const Board = () => {
                 setStatus(status === `Your Turn` ? `AI's turn` : `Your Turn`);
             }
         }
+    };
+
+    const isWinningCord = arr => {
+        if (winningCord.length === 4) {
+            if (JSON.stringify(winningCord).indexOf(JSON.stringify(arr)) !== -1) {
+                console.log(winningCord)
+                console.log(arr)
+                return true;
+            }
+        }
+        return false;
     };
 
     const restartGame = () => window.location.reload();
@@ -109,7 +122,7 @@ const Board = () => {
                     <Grid item xs={1} key={colIndex} className={classes.column} onClick={() =>/* playerClick(colIndex)*/ makeMove(colIndex)}>
                         {column.map((row, rowIndex) => (
                             <Grid item xs={12} key={rowIndex} className={classes.row}>
-                                <Piece player={row} />
+                                <Piece player={row} blink={gameOver && !isDraw && isWinningCord([colIndex, rowIndex]) ? true : false} />
                             </Grid>
                         ))}
                     </Grid>
